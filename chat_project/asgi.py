@@ -1,13 +1,8 @@
-from channels.auth import AuthMiddlewareStack
-from channels.routing import ProtocolTypeRouter, URLRouter
-import chat.routing
+import os
+import django
+from channels.routing import get_default_application
 
-application = ProtocolTypeRouter({  # ProtocolTypeRouter will first inspect the type of connection - if ws or http
-    # use the correct pattern matcher
-    #  (http->django views is added by default)
-    'websocket': AuthMiddlewareStack(
-        URLRouter(
-            chat.routing.websocket_urlpatterns
-        )
-    ),
-})
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "chat_project.settings")
+django.setup()
+application=get_default_application()
