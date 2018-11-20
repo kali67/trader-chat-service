@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'chat_project.wsgi.application' # no longer using this server implementation
+WSGI_APPLICATION = 'chat_project.wsgi.application' # no longer using this server implementation
 
 ASGI_APPLICATION = 'chat.routing.application'
 
