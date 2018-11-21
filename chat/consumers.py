@@ -11,9 +11,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         await self.accept()
+        #check users here
+        print(json.loads(self.scope['user'])['username'])
         await self.channel_layer.group_send(self.group_name, {
             'type': "send.message",
-            "message": "User has joined the room!"
+            "message": {
+                "message" : "User " + json.loads(self.scope['user'])['username'] + "  has joined the room",
+                "username" : "none"
+            }
         })
         await self.channel_layer.group_add(self.group_name, self.channel_name)
 
@@ -25,12 +30,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
         await self.channel_layer.group_send(self.group_name, {
             'type': "send.message",
-            "message": "User has left the room"
+            "message": {
+                "message" : "User " + json.loads(self.scope['user'])['username'] + "  has left the room",
+                "username" : "none"
+            }
         })
 
     async def receive(self, text_data):  # event is the text received from the client
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+        message = {
+            "username": json.loads(self.scope['user'])['username'],
+            "message": text_data_json['message']
+        }
         await self.channel_layer.group_send(self.group_name, {
             'type': "send.message",
             "message": message
