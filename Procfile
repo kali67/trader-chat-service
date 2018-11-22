@@ -1,1 +1,1 @@
-web: daphne chat_project.asgi:application --port $PORT --bind 0.0.0.0
+web: daphne chat_project.asgi:application --port 8000
