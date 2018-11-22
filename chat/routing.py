@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
 from .middleware import TokenAuthMiddleware
 
 
@@ -8,7 +9,7 @@ from . import consumers
 
 application = ProtocolTypeRouter(
     {
-        "websocket": TokenAuthMiddleware(
+        "websocket": AuthMiddlewareStack(
         URLRouter([
             url(r'^ws/chat/(?P<room_name>[^/]+)/$', consumers.ChatConsumer),
         ])
