@@ -10,18 +10,26 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.group_name = 'chat_%s' % self.conversation_name
 
     async def connect(self):
-        print("sfksanfslkfkasfsfhsakfslkfashf;salfhsfs;alfksaaf")
+        # check users here
+        user = dict(json.loads(self.scope['user']))
         await self.accept()
-        #check users here
-     #   print(json.loads(self.scope['user'])['username'])
-        await self.channel_layer.group_send(self.group_name, {
-            'type': "send.message",
-            "message": {
-                "message" : "User ",# + json.loads(self.scope['user'])['username'] + "  has joined the room",
-                "username" : "none"
-            }
-        })
-        await self.channel_layer.group_add(self.group_name, self.channel_name)
+        if 'username' in user:
+            await self.channel_layer.group_send(self.group_name, {
+                'type': "send.message",
+                "message": {
+                    "message": "User " + json.loads(self.scope['user'])['username'] + "  has joined the room",
+                    "username": "none"
+                }
+            })
+            await self.channel_layer.group_add(self.group_name, self.channel_name)
+        else:
+            await self.send(text_data=json.dumps({
+                "message": {
+                    "username": "",
+                    "message": "Unauthorized - please log in or supply valid access token"
+                }
+            }))
+            await self.send(text_data={}, close=True)
 
     async def disconnect(self, code):
         # Leave room group
@@ -29,18 +37,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.group_name,
             self.channel_name
         )
-        await self.channel_layer.group_send(self.group_name, {
-            'type': "send.message",
-            "message": {
-                "message" : "User ",# + json.loads(self.scope['user'])['username'] + "  has left the room",
-                "username" : "none"
-            }
-        })
+        if 'username' in self.scope['user']:  # if was an actual user - emit that they left to the group
+            await self.channel_layer.group_send(self.group_name, {
+                'type': "send.message",
+                "message": {
+                    "message": "User " + json.loads(self.scope['user'])['username'] + "  has left the room",
+                    "username": "none"
+                }
+            })
 
     async def receive(self, text_data):  # event is the text received from the client
         text_data_json = json.loads(text_data)
         message = {
-            "username": "",#json.loads(self.scope['user'])['username'],
+            "username": json.loads(self.scope['user'])['username'],
             "message": text_data_json['message']
         }
         await self.channel_layer.group_send(self.group_name, {
