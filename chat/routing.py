@@ -9,7 +9,7 @@ from . import consumers
 
 application = ProtocolTypeRouter(
     {
-        "websocket": TokenAuthMiddleware(
+        "websocket": AuthMiddlewareStack(
         URLRouter([
             url(r'^ws/chat/(?P<room_name>[^/]+)/$', consumers.ChatConsumer),
         ])
