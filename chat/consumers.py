@@ -12,11 +12,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
         #check users here
-        print(json.loads(self.scope['user'])['username'])
+     #   print(json.loads(self.scope['user'])['username'])
         await self.channel_layer.group_send(self.group_name, {
             'type': "send.message",
             "message": {
-                "message" : "User " + json.loads(self.scope['user'])['username'] + "  has joined the room",
+                "message" : "User ",# + json.loads(self.scope['user'])['username'] + "  has joined the room",
                 "username" : "none"
             }
         })
@@ -31,7 +31,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(self.group_name, {
             'type': "send.message",
             "message": {
-                "message" : "User " + json.loads(self.scope['user'])['username'] + "  has left the room",
+                "message" : "User ",# + json.loads(self.scope['user'])['username'] + "  has left the room",
                 "username" : "none"
             }
         })
@@ -39,7 +39,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):  # event is the text received from the client
         text_data_json = json.loads(text_data)
         message = {
-            "username": json.loads(self.scope['user'])['username'],
+            "username": "",#json.loads(self.scope['user'])['username'],
             "message": text_data_json['message']
         }
         await self.channel_layer.group_send(self.group_name, {
