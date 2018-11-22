@@ -10,6 +10,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.group_name = 'chat_%s' % self.conversation_name
 
     async def connect(self):
+        print("sfksanfslkfkasfsfhsakfslkfashf;salfhsfs;alfksaaf")
         await self.accept()
         #check users here
      #   print(json.loads(self.scope['user'])['username'])
