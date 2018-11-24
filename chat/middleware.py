@@ -1,5 +1,6 @@
 import requests, json
 
+from .serializers import UserSerializer
 
 class TokenAuthMiddleware:
 
@@ -12,4 +13,5 @@ class TokenAuthMiddleware:
         access_token_name, access_token_string = scope['query_string'].decode().split("=")
         response = requests.get("http://trader-flask-nz.herokuapp.com/users/account", headers={
            'X-Auth': access_token_string})
+
         return self.inner(dict(scope, user=response.text))

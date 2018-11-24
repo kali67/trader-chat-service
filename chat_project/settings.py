@@ -18,12 +18,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgres://oebbknlojslrbf:7c9f8733459457cf15eea6d9daa5cf3fa573a4e10205e97d9a19fc28d997fcd5@ec2-54-225-110-156.compute-1.amazonaws.com:5432/d91pqvldqcgh30')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'ov)b(gwkt29ji)!kmto=7bk77m6g#5@pk&v(k+n@)w)wj9&_m8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chat',
     'channels',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -68,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'chat_project.wsgi.application' # no longer using this server implementation
+#WSGI_APPLICATION = 'chat_project.wsgi.application' # no longer using this server implementation
 
 ASGI_APPLICATION = 'chat.routing.application'
 
@@ -87,8 +89,12 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        "NAME": "d91pqvldqcgh30",
+        "USER": "oebbknlojslrbf",
+        "PASSWORD": "7c9f8733459457cf15eea6d9daa5cf3fa573a4e10205e97d9a19fc28d997fcd5",
+        "HOST": "ec2-54-225-110-156.compute-1.amazonaws.com",
+        "PORT": "5432",
     }
 }
 
